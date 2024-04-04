@@ -1,13 +1,11 @@
 import P5 from "p5";
 import Ambulance from "./Ambulance";
 import Junction from "./Junction";
-import Road from "./Road";
 import { Direction } from "./Directions";
 
 const sketch = (p5: P5) => {
   let ambulance: Ambulance;
   let junctions: Junction[] = [];
-  let roads: Road[] = [];
 
   const JunctionCount = 5;
 
@@ -56,9 +54,6 @@ const sketch = (p5: P5) => {
   p5.draw = () => {
     p5.background(250);
 
-    roads.forEach((road) => {
-      road.draw();
-    });
     junctions.forEach((junction) => {
       junction.draw();
     });

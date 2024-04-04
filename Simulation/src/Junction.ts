@@ -21,6 +21,7 @@ export default class Junction {
     this.trafficLights = [];
 
     const dirs = [0, -1, 0, 1, 0];
+    const random = Math.random() / 2;
     for (let i = 0; i < this.lightsPerJunction; ++i) {
       this.trafficLights.push(
         new TrafficLight(
@@ -29,9 +30,9 @@ export default class Junction {
           this.position.y + this.size * dirs[i + 1],
           LightState.Red,
           5,
-          0,
+          2,
           this.lightsPerJunction,
-          i
+          i - random
         )
       );
     }
@@ -203,6 +204,24 @@ export default class Junction {
         this.getLight(Direction.Up).changeToRed(2);
         this.getLight(Direction.Right).changeToRed(1);
         this.getLight(Direction.Down).changeToRed(0);
+        break;
+      case Direction.Up:
+        this.getLight(Direction.Up).changeToGreen();
+        this.getLight(Direction.Right).changeToRed(2);
+        this.getLight(Direction.Down).changeToRed(1);
+        this.getLight(Direction.Left).changeToRed(0);
+        break;
+      case Direction.Right:
+        this.getLight(Direction.Right).changeToGreen();
+        this.getLight(Direction.Down).changeToRed(2);
+        this.getLight(Direction.Left).changeToRed(1);
+        this.getLight(Direction.Up).changeToRed(0);
+        break;
+      case Direction.Down:
+        this.getLight(Direction.Down).changeToGreen();
+        this.getLight(Direction.Left).changeToRed(2);
+        this.getLight(Direction.Up).changeToRed(1);
+        this.getLight(Direction.Right).changeToRed(0);
         break;
     }
   }

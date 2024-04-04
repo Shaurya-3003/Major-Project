@@ -10,9 +10,10 @@ export default class Ambulance {
   currentJunction: Junction;
   moving = false;
 
-  timeToReach = 3 * 60;
-  currentTime = 0;
+  baseSpeed: Vector = new Vector(1, 1);
   speed: Vector = new Vector(0, 0);
+
+  stopLocation: Vector = new Vector(0, 0);
 
   path: Direction[] = [
     Direction.Right,
@@ -35,30 +36,31 @@ export default class Ambulance {
     this.p5.fill(220, 20, 50);
     this.p5.rect(this.position.x, this.position.y, 10, 10);
 
-    if (!this.moving) {
-      if (!this.currentJunction.isLightGreen(Direction.Left)) {
-        this.currentJunction.overrideLight(Direction.Left);
+    if (!this.moving && this.index < this.path.length) {
+      if (
+        !this.currentJunction.isLightGreen((this.path[this.index - 1] + 2) % 4)
+      ) {
+        this.currentJunction.overrideLight((this.path[this.index - 1] + 2) % 4);
       }
 
       this.currentJunction = this.currentJunction.getNextJunction(
         this.path[this.index]
       );
-      ++this.index;
-      this.moving = true;
-      this.currentTime = 0;
-      const distanceToReach = Vector.sub(
-        this.currentJunction.position,
-        this.position
+      this.stopLocation = this.currentJunction.getStopLocation(
+        (this.path[this.index] + 2) % 4
       );
-      this.speed = distanceToReach.div(this.timeToReach);
+      ++this.index;
+      const distanceToReach = Vector.sub(
+        this.stopLocation,
+        this.position
+      ).normalize();
+      this.moving = true;
+      this.speed = Vector.mult(this.baseSpeed, distanceToReach)!;
     }
 
     if (this.moving) {
       this.position.add(this.speed);
-      const distanceToReach = Vector.sub(
-        this.currentJunction.position,
-        this.position
-      );
+      const distanceToReach = Vector.sub(this.stopLocation, this.position);
       if (distanceToReach.magSq() < 2) {
         this.moving = false;
       }
