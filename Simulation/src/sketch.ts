@@ -2,6 +2,7 @@ import P5 from "p5";
 import Ambulance from "./Ambulance";
 import Junction from "./Junction";
 import Road from "./Road";
+import { Direction } from "./Directions";
 
 const sketch = (p5: P5) => {
   let ambulance: Ambulance;
@@ -16,7 +17,9 @@ const sketch = (p5: P5) => {
     return i * JunctionCount + j;
   }
 
-  let delta = 0;
+  function convertToCoords(index: number) {
+    return { x: index % JunctionCount, y: Math.floor(index / JunctionCount) };
+  }
 
   p5.setup = () => {
     windowWidth = window.innerWidth - 20; // offset to remove scrollbars
@@ -32,36 +35,26 @@ const sketch = (p5: P5) => {
       }
     }
 
-    for (let i = 0; i < JunctionCount; ++i) {
-      for (let j = 0; j < JunctionCount - 1; ++j) {
-        roads.push(
-          new Road(
-            p5,
-            junctions[convertToIndex(i, j)],
-            junctions[convertToIndex(i, j + 1)]
-          )
-        );
+    const dirs = [-1, 0, 1, 0, -1];
+    for (let i = 0; i < junctions.length; ++i) {
+      const { x, y } = convertToCoords(i);
+      for (let j = 0; j < 4; ++j) {
+        const nx = x + dirs[j];
+        const ny = y + dirs[j + 1];
+
+        if (nx >= 0 && nx < JunctionCount && ny >= 0 && ny < JunctionCount) {
+          junctions[i].neighbours.push(junctions[convertToIndex(ny, nx)]);
+        } else {
+          junctions[i].neighbours.length++;
+        }
       }
     }
 
-    for (let i = 0; i < JunctionCount - 1; ++i) {
-      for (let j = 0; j < JunctionCount; ++j) {
-        roads.push(
-          new Road(
-            p5,
-            junctions[convertToIndex(i, j)],
-            junctions[convertToIndex(i + 1, j)]
-          )
-        );
-      }
-    }
-    ambulance = new Ambulance(10, 10, p5, junctions[0]);
+    ambulance = new Ambulance(p5, junctions[0], Direction.Left);
   };
 
   p5.draw = () => {
     p5.background(250);
-
-    ambulance.draw();
 
     roads.forEach((road) => {
       road.draw();
@@ -69,11 +62,10 @@ const sketch = (p5: P5) => {
     junctions.forEach((junction) => {
       junction.draw();
     });
-
-    if (p5.deltaTime > delta) {
-      console.log(p5.deltaTime);
-      delta = p5.deltaTime;
-    }
+    junctions.forEach((junction) => {
+      junction.drawLights();
+    });
+    ambulance.draw();
     // for (let i = 0; i < JunctionCount + 1; ++i) {
     //   let posy = (windowHeight / (JunctionCount + 1)) * i;
     //   let posx = 0;

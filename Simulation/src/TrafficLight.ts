@@ -89,4 +89,19 @@ export default class TrafficLight {
         break;
     }
   }
+
+  // For a 4 way junction, the offset needs to be 0, 1, or 2 only.
+  changeToRed(offset: number) {
+    this.currentState = LightState.Red;
+    this.startTime =
+      this.p5.millis() -
+      offset * (this.greenDuration + this.yellowDuration) * 1000;
+    this.determineColor();
+  }
+
+  changeToGreen() {
+    this.currentState = LightState.Green;
+    this.startTime = this.p5.millis();
+    this.determineColor();
+  }
 }
