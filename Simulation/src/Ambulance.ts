@@ -1,13 +1,17 @@
 import { Vector } from "p5";
 import P5 from "p5";
+import Junction from "./Junction";
 
 export default class Ambulance {
   p5: P5;
   position: Vector;
 
-  constructor(x: number, y: number, p5: P5) {
+  currentJunction: Junction;
+
+  constructor(x: number, y: number, p5: P5, startJunction: Junction) {
     this.position = p5.createVector(x, y);
     this.p5 = p5;
+    this.currentJunction = startJunction;
   }
 
   draw() {

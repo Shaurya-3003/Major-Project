@@ -16,19 +16,18 @@ const sketch = (p5: P5) => {
     return i * JunctionCount + j;
   }
 
+  let delta = 0;
+
   p5.setup = () => {
     windowWidth = window.innerWidth - 20; // offset to remove scrollbars
     windowHeight = window.innerHeight - 20;
 
     p5.createCanvas(windowWidth, windowHeight);
-    ambulance = new Ambulance(10, 10, p5);
 
     for (let i = 0; i < JunctionCount; ++i) {
       for (let j = 0; j < JunctionCount; ++j) {
         let posy = (windowHeight / (JunctionCount + 1)) * (i + 1);
         let posx = (windowWidth / (JunctionCount + 1)) * (j + 1);
-
-        console.log(posx, posy);
         junctions.push(new Junction(p5, posx, posy));
       }
     }
@@ -56,20 +55,25 @@ const sketch = (p5: P5) => {
         );
       }
     }
+    ambulance = new Ambulance(10, 10, p5, junctions[0]);
   };
+
   p5.draw = () => {
     p5.background(250);
 
     ambulance.draw();
 
+    roads.forEach((road) => {
+      road.draw();
+    });
     junctions.forEach((junction) => {
       junction.draw();
     });
 
-    roads.forEach((road) => {
-      road.draw();
-    });
-
+    if (p5.deltaTime > delta) {
+      console.log(p5.deltaTime);
+      delta = p5.deltaTime;
+    }
     // for (let i = 0; i < JunctionCount + 1; ++i) {
     //   let posy = (windowHeight / (JunctionCount + 1)) * i;
     //   let posx = 0;

@@ -1,5 +1,6 @@
 import { Vector } from "p5";
 import P5 from "p5";
+import TrafficLight, { LightState } from "./TrafficLight";
 
 export default class Junction {
   position: Vector;
@@ -8,10 +9,30 @@ export default class Junction {
 
   roadBorderLength = 20;
   roadBorderThickness = 5;
+  lightsPerJunction = 4;
+
+  trafficLights: TrafficLight[];
 
   constructor(p5: P5, x: number, y: number) {
     this.p5 = p5;
     this.position = p5.createVector(x, y);
+    this.trafficLights = [];
+
+    const dirs = [0, 1, 0, -1, 0];
+    for (let i = 0; i < this.lightsPerJunction; ++i) {
+      this.trafficLights.push(
+        new TrafficLight(
+          this.p5,
+          this.position.x + this.size * dirs[i],
+          this.position.y + this.size * dirs[i + 1],
+          LightState.Red,
+          2,
+          2,
+          this.lightsPerJunction,
+          i
+        )
+      );
+    }
   }
 
   draw() {
@@ -21,10 +42,13 @@ export default class Junction {
 
     // This causes all susequent draws to take place from the center of junction
     this.p5.translate(this.position.x, this.position.y);
-    //this.drawRoadBorder();
     this.drawRoad();
 
     this.p5.pop();
+
+    this.trafficLights.forEach((trafficLight) => {
+      trafficLight.draw();
+    });
 
     //this.p5.ellipse(this.position.x, this.position.y, this.size, this.size);
   }
