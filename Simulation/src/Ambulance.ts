@@ -10,10 +10,11 @@ export default class Ambulance {
   currentJunction: Junction;
   moving = false;
 
-  baseSpeed: Vector = new Vector(1, 1);
+  baseSpeed: Vector = new Vector(0.5, 0.5);
   speed: Vector = new Vector(0, 0);
 
   stopLocation: Vector = new Vector(0, 0);
+  signalSent = false;
 
   path: Direction[] = [
     Direction.Right,
@@ -37,11 +38,12 @@ export default class Ambulance {
     this.p5.rect(this.position.x, this.position.y, 10, 10);
 
     if (!this.moving && this.index < this.path.length) {
-      if (
-        !this.currentJunction.isLightGreen((this.path[this.index - 1] + 2) % 4)
-      ) {
-        this.currentJunction.overrideLight((this.path[this.index - 1] + 2) % 4);
-      }
+      // if (
+      //   !this.currentJunction.isLightGreen((this.path[this.index - 1] + 2) % 4)
+      // ) {
+      // }
+
+      this.signalSent = false;
 
       this.currentJunction = this.currentJunction.getNextJunction(
         this.path[this.index]
@@ -59,8 +61,28 @@ export default class Ambulance {
     }
 
     if (this.moving) {
-      this.position.add(this.speed);
-      const distanceToReach = Vector.sub(this.stopLocation, this.position);
+      let distanceToReach = Vector.sub(this.stopLocation, this.position);
+      const farSpeedDist = 100;
+      const nearSpeedDist = 20;
+      let speedMult =
+        distanceToReach.magSq() > farSpeedDist * farSpeedDist ||
+        distanceToReach.magSq() < nearSpeedDist * nearSpeedDist
+          ? 0.5
+          : 1;
+
+      this.p5.text(speedMult, this.position.x, this.position.y);
+      //speedMult = 1;
+      this.position.add(Vector.mult(this.speed, speedMult)!);
+      distanceToReach = Vector.sub(this.stopLocation, this.position);
+      if (distanceToReach.magSq() < farSpeedDist * farSpeedDist) {
+        if (!this.signalSent) {
+          this.currentJunction.overrideLight(
+            (this.path[this.index - 1] + 2) % 4
+          );
+          this.signalSent = true;
+        }
+      }
+
       if (distanceToReach.magSq() < 2) {
         this.moving = false;
       }

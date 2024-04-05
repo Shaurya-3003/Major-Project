@@ -7,7 +7,7 @@ const sketch = (p5: P5) => {
   let ambulance: Ambulance;
   let junctions: Junction[] = [];
 
-  const JunctionCount = 1;
+  const JunctionCount = 5;
 
   let windowWidth: number, windowHeight: number;
 
@@ -64,7 +64,7 @@ const sketch = (p5: P5) => {
     junctions.forEach((junction) => {
       junction.drawLights();
     });
-    //ambulance.draw();
+    ambulance.draw();
     // for (let i = 0; i < JunctionCount + 1; ++i) {
     //   let posy = (windowHeight / (JunctionCount + 1)) * i;
     //   let posx = 0;
