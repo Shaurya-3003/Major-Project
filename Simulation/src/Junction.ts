@@ -201,27 +201,63 @@ export default class Junction {
     switch (direction) {
       case Direction.Left:
         this.getLight(Direction.Left).changeToGreen();
-        this.getLight(Direction.Up).changeToRed(2);
-        this.getLight(Direction.Right).changeToRed(1);
-        this.getLight(Direction.Down).changeToRed(0);
+        this.getLight(Direction.Up).changeToRed(
+          2,
+          this.isLightGreen(Direction.Left)
+        );
+        this.getLight(Direction.Right).changeToRed(
+          1,
+          this.isLightGreen(Direction.Left)
+        );
+        this.getLight(Direction.Down).changeToRed(
+          0,
+          this.isLightGreen(Direction.Left)
+        );
         break;
       case Direction.Up:
         this.getLight(Direction.Up).changeToGreen();
-        this.getLight(Direction.Right).changeToRed(2);
-        this.getLight(Direction.Down).changeToRed(1);
-        this.getLight(Direction.Left).changeToRed(0);
+        this.getLight(Direction.Right).changeToRed(
+          2,
+          this.isLightGreen(Direction.Up)
+        );
+        this.getLight(Direction.Down).changeToRed(
+          1,
+          this.isLightGreen(Direction.Up)
+        );
+        this.getLight(Direction.Left).changeToRed(
+          0,
+          this.isLightGreen(Direction.Up)
+        );
         break;
       case Direction.Right:
         this.getLight(Direction.Right).changeToGreen();
-        this.getLight(Direction.Down).changeToRed(2);
-        this.getLight(Direction.Left).changeToRed(1);
-        this.getLight(Direction.Up).changeToRed(0);
+        this.getLight(Direction.Down).changeToRed(
+          2,
+          this.isLightGreen(Direction.Right)
+        );
+        this.getLight(Direction.Left).changeToRed(
+          1,
+          this.isLightGreen(Direction.Right)
+        );
+        this.getLight(Direction.Up).changeToRed(
+          0,
+          this.isLightGreen(Direction.Right)
+        );
         break;
       case Direction.Down:
         this.getLight(Direction.Down).changeToGreen();
-        this.getLight(Direction.Left).changeToRed(2);
-        this.getLight(Direction.Up).changeToRed(1);
-        this.getLight(Direction.Right).changeToRed(0);
+        this.getLight(Direction.Left).changeToRed(
+          2,
+          this.isLightGreen(Direction.Down)
+        );
+        this.getLight(Direction.Up).changeToRed(
+          1,
+          this.isLightGreen(Direction.Down)
+        );
+        this.getLight(Direction.Right).changeToRed(
+          0,
+          this.isLightGreen(Direction.Down)
+        );
         break;
     }
   }

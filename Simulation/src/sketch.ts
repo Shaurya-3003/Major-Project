@@ -7,7 +7,7 @@ const sketch = (p5: P5) => {
   let ambulance: Ambulance;
   let junctions: Junction[] = [];
 
-  const JunctionCount = 5;
+  const JunctionCount = 1;
 
   let windowWidth: number, windowHeight: number;
 
@@ -23,7 +23,7 @@ const sketch = (p5: P5) => {
     windowWidth = window.innerWidth - 20; // offset to remove scrollbars
     windowHeight = window.innerHeight - 20;
 
-    p5.createCanvas(windowWidth, windowHeight);
+    const canvas = p5.createCanvas(windowWidth, windowHeight);
 
     for (let i = 0; i < JunctionCount; ++i) {
       for (let j = 0; j < JunctionCount; ++j) {
@@ -49,6 +49,10 @@ const sketch = (p5: P5) => {
     }
 
     ambulance = new Ambulance(p5, junctions[0], Direction.Left);
+
+    canvas.mouseClicked(() => {
+      junctions[0].overrideLight(Direction.Left);
+    });
   };
 
   p5.draw = () => {
@@ -60,7 +64,7 @@ const sketch = (p5: P5) => {
     junctions.forEach((junction) => {
       junction.drawLights();
     });
-    ambulance.draw();
+    //ambulance.draw();
     // for (let i = 0; i < JunctionCount + 1; ++i) {
     //   let posy = (windowHeight / (JunctionCount + 1)) * i;
     //   let posx = 0;

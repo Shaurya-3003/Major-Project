@@ -74,6 +74,17 @@ export default class TrafficLight {
 
     this.p5.fill(this.color);
     this.p5.ellipse(this.position.x, this.position.y, 10, 10);
+
+    const leftTime = this.determineTimeLeft(elapsedTime);
+    this.p5.push();
+    this.p5.stroke(this.color);
+    this.p5.strokeWeight(2);
+    this.p5.text(
+      leftTime.toFixed(0),
+      this.position.x - 20,
+      this.position.y + 5
+    );
+    this.p5.pop();
   }
 
   determineColor() {
@@ -90,18 +101,45 @@ export default class TrafficLight {
     }
   }
 
+  determineTimeLeft(elapsedTime: number) {
+    switch (this.currentState) {
+      case LightState.Red:
+        return this.redDuration - elapsedTime;
+      case LightState.Yellow:
+        return this.yellowDuration - elapsedTime;
+      case LightState.Green:
+        return this.greenDuration - elapsedTime;
+    }
+  }
+
   // For a 4 way junction, the offset needs to be 0, 1, or 2 only.
-  changeToRed(offset: number) {
-    this.currentState = LightState.Red;
-    this.startTime =
-      this.p5.millis() -
-      offset * (this.greenDuration + this.yellowDuration) * 1000;
+  changeToRed(offset: number, reset: Boolean) {
+    if (
+      this.currentState === LightState.Red ||
+      this.currentState === LightState.Yellow
+    ) {
+      this.currentState = LightState.Red;
+      this.startTime =
+        this.p5.millis() -
+        offset * (this.greenDuration + this.yellowDuration) * 1000 +
+        (reset ? 0 : this.yellowDuration * 1000);
+    } else if (this.currentState === LightState.Green) {
+      this.currentState = LightState.Yellow;
+      this.startTime = this.p5.millis();
+    }
+
     this.determineColor();
   }
 
   changeToGreen() {
-    this.currentState = LightState.Green;
-    this.startTime = this.p5.millis();
+    if (this.currentState === LightState.Red) {
+      this.currentState = LightState.Red;
+      this.startTime =
+        this.p5.millis() - (this.redDuration - this.yellowDuration) * 1000;
+    } else {
+      this.currentState = LightState.Green;
+      this.startTime = this.p5.millis();
+    }
     this.determineColor();
   }
 }
