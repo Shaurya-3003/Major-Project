@@ -38,11 +38,6 @@ export default class Ambulance {
     this.p5.rect(this.position.x, this.position.y, 10, 10);
 
     if (!this.moving && this.index < this.path.length) {
-      // if (
-      //   !this.currentJunction.isLightGreen((this.path[this.index - 1] + 2) % 4)
-      // ) {
-      // }
-
       this.signalSent = false;
 
       this.currentJunction = this.currentJunction.getNextJunction(
@@ -85,6 +80,7 @@ export default class Ambulance {
 
       if (distanceToReach.magSq() < 2) {
         this.moving = false;
+        //Triggers the change in junction
       }
     }
   }
